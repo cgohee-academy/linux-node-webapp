@@ -1,19 +1,20 @@
 pipeline {
-    agent any
+    agent { label 'linux-node' }   // use your agent node
     stages {
-        stage('Build') {
+        stage('Build Docker Image') {
             steps {
-                echo 'Building...'
+                script {
+                    // Build Docker image using the Dockerfile in repo
+                    docker.build('node-webapp-image')
+                }
             }
         }
-        stage('Test') {
+        stage('Run Docker Container') {
             steps {
-                echo 'Testing...'
-            }
-        }
-        stage('Deploy') {
-            steps {
-                echo 'Deploying...'
+                script {
+                    // Run the container
+                    docker.image('node-webapp-image').run('-d -p 3000:3000')
+                }
             }
         }
     }
